@@ -50,6 +50,11 @@ EXAMS = {
         "name": "قانون الجرائم والعقوبات",
         "file": "questions_criminal_law.json",
         "time": 30
+    },
+    "criminal_procedure": {
+    "name": "قانون الإجراءات الجزائية",
+    "file": "questions_criminal_procedure.json",
+    "time": 30
     }
 }
 
