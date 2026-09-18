@@ -449,7 +449,9 @@ RESULT_PAGE = """
     </div>
 
     {% endif %}
-
+    <a href="/review" class="button">
+    مراجعة الإجابات الخاطئة
+    </a>
     <a href="/">
         العودة إلى الصفحة الرئيسية
     </a>
@@ -458,6 +460,132 @@ RESULT_PAGE = """
 
 </body>
 </html>
+REVIEW_PAGE = """
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>مراجعة الإجابات</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f5f7fa;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .question {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-right: 5px solid #d9534f;
+        }
+
+        .wrong {
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        .correct {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .article {
+            color: #666;
+        }
+
+        .button {
+            display: block;
+            width: 220px;
+            margin: 30px auto;
+            padding: 14px;
+            text-align: center;
+            background: #1d3557;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>مراجعة الإجابات الخاطئة</h1>
+
+    {% if wrong_answers %}
+
+        <p>
+            عدد الإجابات التي تحتاج إلى مراجعة:
+            <strong>{{ wrong_answers|length }}</strong>
+        </p>
+
+        {% for item in wrong_answers %}
+
+        <div class="question">
+
+            <h3>
+                السؤال {{ loop.index }}
+            </h3>
+
+            <p>
+                {{ item.question }}
+            </p>
+
+            <p class="wrong">
+                إجابتك:
+                {{ item.user_answer }}
+            </p>
+
+            <p class="correct">
+                الإجابة الصحيحة:
+                {{ item.correct_answer }}
+            </p>
+
+            {% if item.article %}
+
+            <p class="article">
+                المادة: {{ item.article }}
+            </p>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <h2 style="text-align:center;">
+            ممتاز! لا توجد إجابات خاطئة.
+        </h2>
+
+    {% endif %}
+
+    <a href="/" class="button">
+        العودة للصفحة الرئيسية
+    </a>
+
+</div>
+
+</body>
+</html>
+"""
 """
 
 
@@ -547,11 +675,11 @@ def submit():
     score = 0
     auto_questions = 0
     analysis_questions = 0
+    wrong_answers = []
 
-    # أرقام الأسئلة التي ظهرت للممتحن
+    # الأسئلة التي ظهرت للممتحن فقط
     exam_question_ids = session.get("exam_question_ids", [])
 
-    # اختيار الأسئلة التي ظهرت فقط
     exam_questions = [
         q for q in QUESTIONS
         if q["id"] in exam_question_ids
@@ -564,7 +692,7 @@ def submit():
             ""
         ).strip()
 
-        # أسئلة التحليل سنضيف تصحيحها الذكي في الخطوة التالية
+        # أسئلة التحليل سنعالجها لاحقا
         if question["type"] == "analysis":
             analysis_questions += 1
             continue
@@ -575,14 +703,37 @@ def submit():
             question["answer"]
         ).strip()
 
+        # الإجابة صحيحة
         if user_answer.lower() == correct_answer.lower():
             score += 1
+
+        # الإجابة خاطئة
+        else:
+            wrong_answers.append({
+                "id": question["id"],
+                "question": question["question"],
+                "user_answer": user_answer if user_answer else "لم تتم الإجابة",
+                "correct_answer": correct_answer,
+                "article": question.get("article", "")
+            })
+
+    # حفظ الأخطاء للمراجعة
+    session["wrong_answers"] = wrong_answers
 
     return render_template_string(
         RESULT_PAGE,
         score=score,
         auto_questions=auto_questions,
         analysis_questions=analysis_questions
+    )
+    @app.route("/review")
+def review():
+
+    wrong_answers = session.get("wrong_answers", [])
+
+    return render_template_string(
+        REVIEW_PAGE,
+        wrong_answers=wrong_answers
     )
 
 # =========================================================
