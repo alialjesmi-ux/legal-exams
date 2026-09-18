@@ -352,20 +352,40 @@ EXAM_PAGE = """
                 <strong>{{ q.question }}</strong>
             </p>
 
-            {% if q.type == "mcq" or q.type == "true_false" %}
+{% if q.type == "true_false" %}
 
-                {% for option in q.options %}
+    <label>
+        <input
+            type="radio"
+            name="q{{ q.id }}"
+            value="صح"
+        >
+        صح
+    </label>
 
-                <label>
-                    <input
-                        type="radio"
-                        name="q{{ q.id }}"
-                        value="{{ option }}"
-                    >
-                    {{ option }}
-                </label>
+    <label>
+        <input
+            type="radio"
+            name="q{{ q.id }}"
+            value="خطأ"
+        >
+        خطأ
+    </label>
 
-                {% endfor %}
+{% elif q.type == "mcq" %}
+
+    {% for option in q.options %}
+
+    <label>
+        <input
+            type="radio"
+            name="q{{ q.id }}"
+            value="{{ option }}"
+        >
+        {{ option }}
+    </label>
+
+    {% endfor %}
 
             {% elif q.type == "complete" %}
 
