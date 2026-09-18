@@ -101,7 +101,7 @@ HOME_PAGE = """
         }
 
         .container {
-            max-width: 850px;
+            max-width: 950px;
             margin: 35px auto;
             padding: 0 20px;
         }
@@ -114,11 +114,23 @@ HOME_PAGE = """
             text-align: center;
         }
 
-        .law-card {
+        .laws-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             margin-top: 25px;
+        }
+
+        .law-card {
             padding: 25px;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .law-card h3 {
+            color: #17365d;
+            min-height: 55px;
         }
 
         .button {
@@ -132,8 +144,12 @@ HOME_PAGE = """
             margin-top: 15px;
         }
 
+        .button:hover {
+            background: #0f2948;
+        }
+
         .visits {
-            margin-top: 25px;
+            margin-top: 30px;
             color: #64748b;
         }
 
@@ -160,23 +176,54 @@ HOME_PAGE = """
 
         <h2>اختر القانون</h2>
 
-        <div class="law-card">
+        <p>
+            اختر القانون الذي ترغب في اختبار معلوماتك فيه
+        </p>
 
-            <h3>⚖️ {{ exam_name }}</h3>
+        <div class="laws-grid">
 
-            <p>
-                اختبار تجريبي يتضمن اختيار من متعدد،
-                صح أو خطأ، أكمل الجملة، والتعليل أو التحليل.
-            </p>
+            <div class="law-card">
 
-            <p>
-                مدة الاختبار:
-                <strong>{{ exam_time }} دقائق</strong>
-            </p>
+                <h3>
+                    ⚖️ قانون الأحوال الشخصية الاتحادي
+                </h3>
 
-            <a href="/exam" class="button">
-                بدء الاختبار
-            </a>
+                <p>
+                    اختبار في أحكام قانون الأحوال الشخصية.
+                </p>
+
+                <p>
+                    مدة الاختبار:
+                    <strong>30 دقيقة</strong>
+                </p>
+
+                <a href="/exam/personal_status" class="button">
+                    بدء الاختبار
+                </a>
+
+            </div>
+
+
+            <div class="law-card">
+
+                <h3>
+                    ⚖️ قانون الأحوال الشخصية المدني
+                </h3>
+
+                <p>
+                    اختبار في أحكام قانون الأحوال الشخصية المدني.
+                </p>
+
+                <p>
+                    مدة الاختبار:
+                    <strong>30 دقيقة</strong>
+                </p>
+
+                <a href="/exam/civil_personal_status" class="button">
+                    بدء الاختبار
+                </a>
+
+            </div>
 
         </div>
 
