@@ -795,7 +795,73 @@ def home():
         exam_time=EXAM_TIME_MINUTES,
         visits=VISITS
     )
+@app.route("/comprehensive")
+def comprehensive_exam():
 
+    all_questions = []
+
+    # تحميل أسئلة جميع القوانين
+    for exam_key, exam_config in EXAMS.items():
+
+        questions = load_questions(exam_config["file"])
+
+        for q in questions:
+            question = q.copy()
+
+            # حفظ اسم القانون ومفتاحه مع السؤال
+            question["exam_key"] = exam_key
+            question["law"] = exam_config["name"]
+
+            all_questions.append(question)
+
+    # تقسيم الأسئلة حسب القانون
+    questions_by_law = {}
+
+    for question in all_questions:
+        key = question["exam_key"]
+
+        if key not in questions_by_law:
+            questions_by_law[key] = []
+
+        questions_by_law[key].append(question)
+
+    # اختيار متوازن من القوانين الستة
+    selected_questions = []
+
+    exam_keys = list(EXAMS.keys())
+
+    # 16 سؤالاً من كل قانون = 96
+    for key in exam_keys:
+        law_questions = questions_by_law[key]
+
+        selected_questions += random.sample(
+            law_questions,
+            min(16, len(law_questions))
+        )
+
+    # إضافة 4 أسئلة إضافية عشوائياً لإكمال 100 سؤال
+    remaining_questions = [
+        q for q in all_questions
+        if q not in selected_questions
+    ]
+
+    selected_questions += random.sample(
+        remaining_questions,
+        min(4, len(remaining_questions))
+    )
+
+    random.shuffle(selected_questions)
+
+    # حفظ الأسئلة نفسها لأن أرقام ID تتكرر بين القوانين
+    session["comprehensive_questions"] = selected_questions
+    session["exam_key"] = "comprehensive"
+
+    return render_template_string(
+        EXAM_PAGE,
+        exam_name=COMPREHENSIVE_EXAM["name"],
+        exam_time=COMPREHENSIVE_EXAM["time"],
+        questions=selected_questions
+    )
 
 @app.route("/exam/<exam_key>")
 def exam(exam_key):
