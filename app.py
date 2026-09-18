@@ -186,52 +186,74 @@ HOME_PAGE = """
             اختر القانون الذي ترغب في اختبار معلوماتك فيه
         </p>
 
-        <div class="laws-grid">
+<div class="laws-grid">
 
-            <div class="law-card">
+    <div class="law-card">
 
-                <h3>
-                    ⚖️ قانون الأحوال الشخصية الاتحادي
-                </h3>
+        <h3>
+            ⚖️ قانون الأحوال الشخصية الاتحادي
+        </h3>
 
-                <p>
-                    اختبار في أحكام قانون الأحوال الشخصية.
-                </p>
+        <p>
+            اختبار في أحكام قانون الأحوال الشخصية.
+        </p>
 
-                <p>
-                    مدة الاختبار:
-                    <strong>30 دقيقة</strong>
-                </p>
+        <p>
+            مدة الاختبار:
+            <strong>30 دقيقة</strong>
+        </p>
 
-                <a href="/exam/personal_status" class="button">
-                    بدء الاختبار
-                </a>
+        <a href="/exam/personal_status" class="button">
+            بدء الاختبار
+        </a>
 
-            </div>
+    </div>
 
 
-            <div class="law-card">
+    <div class="law-card">
 
-                <h3>
-                    ⚖️ قانون الأحوال الشخصية المدني
-                </h3>
+        <h3>
+            ⚖️ قانون الأحوال الشخصية المدني
+        </h3>
 
-                <p>
-                    اختبار في أحكام قانون الأحوال الشخصية المدني.
-                </p>
+        <p>
+            اختبار في أحكام قانون الأحوال الشخصية المدني.
+        </p>
 
-                <p>
-                    مدة الاختبار:
-                    <strong>30 دقيقة</strong>
-                </p>
+        <p>
+            مدة الاختبار:
+            <strong>30 دقيقة</strong>
+        </p>
 
-                <a href="/exam/civil_personal_status" class="button">
-                    بدء الاختبار
-                </a>
+        <a href="/exam/civil_personal_status" class="button">
+            بدء الاختبار
+        </a>
 
-            </div>
+    </div>
 
-        </div>
+
+    <div class="law-card">
+
+        <h3>
+            ⚖️ قانون الإجراءات المدنية
+        </h3>
+
+        <p>
+            اختبار في أحكام قانون الإجراءات المدنية.
+        </p>
+
+        <p>
+            مدة الاختبار:
+            <strong>30 دقيقة</strong>
+        </p>
+
+        <a href="/exam/civil_procedure" class="button">
+            بدء الاختبار
+        </a>
+
+    </div>
+
+</div>
 
         <div class="visits">
             👁️ عدد زيارات المنصة: {{ visits }}
