@@ -979,22 +979,22 @@ if exam_key == "comprehensive":
         for q in questions
     ]
 
-    elif exam_key in EXAMS:
+elif exam_key in EXAMS:
 
-        exam_config = EXAMS[exam_key]
+    exam_config = EXAMS[exam_key]
 
-        questions = load_questions(
-            exam_config["file"]
-        )
+    questions = load_questions(
+        exam_config["file"]
+    )
 
-        exam_question_ids = session.get(
-            "exam_question_ids",
-            []
-        )
+    exam_question_ids = session.get(
+        "exam_question_ids",
+        []
+    )
 
-    else:
+else:
 
-        return redirect(url_for("home"))
+    return redirect(url_for("home"))
 
     for question_id in exam_question_ids:
 
