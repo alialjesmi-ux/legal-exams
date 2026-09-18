@@ -805,14 +805,19 @@ def comprehensive_exam():
 
         questions = load_questions(exam_config["file"])
 
-        for q in questions:
-            question = q.copy()
+    for q in questions:
+    question = q.copy()
 
-            # حفظ اسم القانون ومفتاحه مع السؤال
-            question["exam_key"] = exam_key
-            question["law"] = exam_config["name"]
+    # حفظ اسم القانون ومفتاحه مع السؤال
+    question["exam_key"] = exam_key
+    question["law"] = exam_config["name"]
 
-            all_questions.append(question)
+    # معرف فريد للسؤال داخل الاختبار الشامل
+    question["form_id"] = (
+        str(exam_key) + "_" + str(q["id"])
+    )
+
+    all_questions.append(question)
 
     # تقسيم الأسئلة حسب القانون
     questions_by_law = {}
