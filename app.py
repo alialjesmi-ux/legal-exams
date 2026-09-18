@@ -670,31 +670,49 @@ def home():
     )
 
 
-@app.route("/exam")
-def exam():
+@app.route("/exam/<exam_key>")
+def exam(exam_key):
+
+    # التأكد من أن القانون موجود
+    if exam_key not in EXAMS:
+        return redirect(url_for("home"))
+
+    # بيانات القانون المختار
+    exam_config = EXAMS[exam_key]
+
+    exam_name = exam_config["name"]
+    exam_time = exam_config["time"]
+
+    # تحميل بنك الأسئلة الخاص بالقانون
+    questions = load_questions(
+        exam_config["file"]
+    )
+
+    # حفظ القانون المختار للممتحن
+    session["exam_key"] = exam_key
 
     # تقسيم بنك الأسئلة حسب النوع
     true_false = [
-        q for q in QUESTIONS
+        q for q in questions
         if q["type"] == "true_false"
     ]
 
     mcq = [
-        q for q in QUESTIONS
+        q for q in questions
         if q["type"] == "mcq"
     ]
 
     complete = [
-        q for q in QUESTIONS
+        q for q in questions
         if q["type"] == "complete"
     ]
 
     analysis = [
-        q for q in QUESTIONS
+        q for q in questions
         if q["type"] == "analysis"
     ]
 
-    # اختيار التوزيع المطلوب
+    # اختيار الأسئلة
     selected_questions = []
 
     selected_questions += random.sample(
@@ -717,18 +735,18 @@ def exam():
         min(2, len(analysis))
     )
 
-    # خلط جميع الأسئلة بعد اختيارها
+    # خلط الأسئلة
     random.shuffle(selected_questions)
 
-    # حفظ أرقام الأسئلة الخاصة بهذا الممتحن
+    # حفظ أرقام أسئلة هذا الاختبار
     session["exam_question_ids"] = [
         q["id"] for q in selected_questions
     ]
 
     return render_template_string(
         EXAM_PAGE,
-        exam_name=EXAM_NAME,
-        exam_time=EXAM_TIME_MINUTES,
+        exam_name=exam_name,
+        exam_time=exam_time,
         questions=selected_questions
     )
 
