@@ -801,7 +801,6 @@ def comprehensive_exam():
 
     all_questions = []
 
-    # تحميل أسئلة جميع القوانين
     for exam_key, exam_config in EXAMS.items():
 
         questions = load_questions(
@@ -812,11 +811,9 @@ def comprehensive_exam():
 
             question = q.copy()
 
-            # حفظ اسم القانون ومفتاحه
             question["exam_key"] = exam_key
             question["law"] = exam_config["name"]
 
-            # معرف فريد داخل الاختبار الشامل
             question["form_id"] = (
                 str(exam_key)
                 + "_"
@@ -825,7 +822,6 @@ def comprehensive_exam():
 
             all_questions.append(question)
 
-    # تقسيم الأسئلة حسب القانون
     questions_by_law = {}
 
     for question in all_questions:
@@ -837,12 +833,10 @@ def comprehensive_exam():
 
         questions_by_law[key].append(question)
 
-    # اختيار متوازن من القوانين
     selected_questions = []
 
     exam_keys = list(EXAMS.keys())
 
-    # 16 سؤالا من كل قانون = 96
     for key in exam_keys:
 
         law_questions = questions_by_law[key]
@@ -852,7 +846,6 @@ def comprehensive_exam():
             min(16, len(law_questions))
         )
 
-    # إضافة 4 أسئلة لإكمال 100
     remaining_questions = [
         q for q in all_questions
         if q not in selected_questions
@@ -865,10 +858,13 @@ def comprehensive_exam():
 
     random.shuffle(selected_questions)
 
-    session["comprehensive_questions"] = (
-        selected_questions
-    )
+    # حفظ الاختبار على الخادم
+    exam_id = str(uuid.uuid4())
 
+    ACTIVE_EXAMS[exam_id] = selected_questions
+
+    # حفظ رقم صغير فقط داخل Session
+    session["active_exam_id"] = exam_id
     session["exam_key"] = "comprehensive"
 
     return render_template_string(
@@ -969,17 +965,19 @@ def submit():
 
     exam_key = session.get("exam_key")
 
-    if exam_key == "comprehensive":
+if exam_key == "comprehensive":
 
-        questions = session.get(
-            "comprehensive_questions",
-            []
-        )
+    exam_id = session.get("active_exam_id")
 
-        exam_question_ids = [
-            q["form_id"]
-            for q in questions
-        ]
+    questions = ACTIVE_EXAMS.get(
+        exam_id,
+        []
+    )
+
+    exam_question_ids = [
+        q["form_id"]
+        for q in questions
+    ]
 
     elif exam_key in EXAMS:
 
