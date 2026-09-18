@@ -460,6 +460,7 @@ RESULT_PAGE = """
 
 </body>
 </html>
+"""
 REVIEW_PAGE = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
