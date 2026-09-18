@@ -481,9 +481,14 @@ def home():
 
 @app.route("/exam")
 def exam():
-
     questions = QUESTIONS.copy()
-    random.shuffle(questions)
+
+    # اختيار 100 سؤال عشوائي فقط من بنك الأسئلة
+    number_of_questions = min(100, len(questions))
+    questions = random.sample(questions, number_of_questions)
+
+    # حفظ أرقام الأسئلة التي ظهرت لهذا الممتحن
+    session["exam_question_ids"] = [q["id"] for q in questions]
 
     return render_template_string(
         EXAM_PAGE,
@@ -495,25 +500,36 @@ def exam():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-
     score = 0
     auto_questions = 0
     analysis_questions = 0
 
-    for question in QUESTIONS:
+    # أرقام الأسئلة التي ظهرت للممتحن
+    exam_question_ids = session.get("exam_question_ids", [])
+
+    # اختيار الأسئلة التي ظهرت فقط
+    exam_questions = [
+        q for q in QUESTIONS
+        if q["id"] in exam_question_ids
+    ]
+
+    for question in exam_questions:
 
         user_answer = request.form.get(
             "q" + str(question["id"]),
             ""
         ).strip()
 
+        # أسئلة التحليل سنضيف تصحيحها الذكي في الخطوة التالية
         if question["type"] == "analysis":
             analysis_questions += 1
             continue
 
         auto_questions += 1
 
-        correct_answer = str(question["answer"]).strip()
+        correct_answer = str(
+            question["answer"]
+        ).strip()
 
         if user_answer.lower() == correct_answer.lower():
             score += 1
@@ -524,7 +540,6 @@ def submit():
         auto_questions=auto_questions,
         analysis_questions=analysis_questions
     )
-
 
 # =========================================================
 # START
