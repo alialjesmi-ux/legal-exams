@@ -671,27 +671,30 @@ def exam():
 
 @app.route("/submit", methods=["POST"])
 def submit():
+
     score = 0
     auto_questions = 0
     analysis_questions = 0
     wrong_answers = []
 
-    # الأسئلة التي ظهرت للممتحن فقط
     exam_question_ids = session.get("exam_question_ids", [])
 
-    exam_questions = [
-        q for q in QUESTIONS
-        if q["id"] in exam_question_ids
-    ]
+    for question_id in exam_question_ids:
 
-    for question in exam_questions:
+        question = next(
+            (q for q in QUESTIONS if q["id"] == question_id),
+            None
+        )
+
+        if not question:
+            continue
 
         user_answer = request.form.get(
             "q" + str(question["id"]),
             ""
         ).strip()
 
-        # أسئلة التحليل سنعالجها لاحقا
+        # أسئلة التحليل
         if question["type"] == "analysis":
             analysis_questions += 1
             continue
@@ -699,15 +702,15 @@ def submit():
         auto_questions += 1
 
         correct_answer = str(
-            question["answer"]
+            question.get("answer", "")
         ).strip()
 
-        # الإجابة صحيحة
         if user_answer.lower() == correct_answer.lower():
+
             score += 1
 
-        # الإجابة خاطئة
         else:
+
             wrong_answers.append({
                 "id": question["id"],
                 "question": question["question"],
@@ -716,7 +719,6 @@ def submit():
                 "article": question.get("article", "")
             })
 
-    # حفظ الأخطاء للمراجعة
     session["wrong_answers"] = wrong_answers
 
     return render_template_string(
