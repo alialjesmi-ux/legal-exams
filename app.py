@@ -464,7 +464,7 @@ EXAM_PAGE = """
     <label>
         <input
             type="radio"
-            name="q{{ q.id }}"
+            name="q{{ q.form_id if q.form_id is defined else q.id }}"
             value="صح"
         >
         صح
@@ -473,7 +473,7 @@ EXAM_PAGE = """
     <label>
         <input
             type="radio"
-            name="q{{ q.id }}"
+            name="q{{ q.form_id if q.form_id is defined else q.id }}"
             value="خطأ"
         >
         خطأ
@@ -486,7 +486,7 @@ EXAM_PAGE = """
     <label>
         <input
             type="radio"
-            name="q{{ q.id }}"
+            name="q{{ q.form_id if q.form_id is defined else q.id }}"
             value="{{ option }}"
         >
         {{ option }}
@@ -498,14 +498,14 @@ EXAM_PAGE = """
 
                 <input
                     type="text"
-                    name="q{{ q.id }}"
+                    name="q{{ q.form_id if q.form_id is defined else q.id }}"
                     placeholder="اكتب الإجابة"
                 >
 
             {% elif q.type == "analysis" %}
 
                 <textarea
-                    name="q{{ q.id }}"
+                    name="q{{ q.form_id if q.form_id is defined else q.id }}"
                     placeholder="اكتب إجابتك التحليلية هنا..."
                 ></textarea>
 
