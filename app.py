@@ -803,26 +803,32 @@ def comprehensive_exam():
     # تحميل أسئلة جميع القوانين
     for exam_key, exam_config in EXAMS.items():
 
-        questions = load_questions(exam_config["file"])
+        questions = load_questions(
+            exam_config["file"]
+        )
 
-    for q in questions:
-    question = q.copy()
+        for q in questions:
 
-    # حفظ اسم القانون ومفتاحه مع السؤال
-    question["exam_key"] = exam_key
-    question["law"] = exam_config["name"]
+            question = q.copy()
 
-    # معرف فريد للسؤال داخل الاختبار الشامل
-    question["form_id"] = (
-        str(exam_key) + "_" + str(q["id"])
-    )
+            # حفظ اسم القانون ومفتاحه
+            question["exam_key"] = exam_key
+            question["law"] = exam_config["name"]
 
-    all_questions.append(question)
+            # معرف فريد داخل الاختبار الشامل
+            question["form_id"] = (
+                str(exam_key)
+                + "_"
+                + str(q["id"])
+            )
+
+            all_questions.append(question)
 
     # تقسيم الأسئلة حسب القانون
     questions_by_law = {}
 
     for question in all_questions:
+
         key = question["exam_key"]
 
         if key not in questions_by_law:
@@ -830,13 +836,14 @@ def comprehensive_exam():
 
         questions_by_law[key].append(question)
 
-    # اختيار متوازن من القوانين الستة
+    # اختيار متوازن من القوانين
     selected_questions = []
 
     exam_keys = list(EXAMS.keys())
 
-    # 16 سؤالاً من كل قانون = 96
+    # 16 سؤالا من كل قانون = 96
     for key in exam_keys:
+
         law_questions = questions_by_law[key]
 
         selected_questions += random.sample(
@@ -844,7 +851,7 @@ def comprehensive_exam():
             min(16, len(law_questions))
         )
 
-    # إضافة 4 أسئلة إضافية عشوائياً لإكمال 100 سؤال
+    # إضافة 4 أسئلة لإكمال 100
     remaining_questions = [
         q for q in all_questions
         if q not in selected_questions
@@ -857,8 +864,10 @@ def comprehensive_exam():
 
     random.shuffle(selected_questions)
 
-    # حفظ الأسئلة نفسها لأن أرقام ID تتكرر بين القوانين
-    session["comprehensive_questions"] = selected_questions
+    session["comprehensive_questions"] = (
+        selected_questions
+    )
+
     session["exam_key"] = "comprehensive"
 
     return render_template_string(
@@ -961,14 +970,15 @@ def submit():
 
     if exam_key == "comprehensive":
 
-    questions = session.get(
-        "comprehensive_questions",
-        []
-    )
+        questions = session.get(
+            "comprehensive_questions",
+            []
+        )
 
-    exam_question_ids = [
-        q["form_id"] for q in questions
-    ]
+        exam_question_ids = [
+            q["form_id"]
+            for q in questions
+        ]
 
     elif exam_key in EXAMS:
 
@@ -989,31 +999,31 @@ def submit():
 
     for question_id in exam_question_ids:
 
-question = next(
-    (
-        q for q in questions
-        if (
-            q.get("form_id", q["id"])
-            == question_id
+        question = next(
+            (
+                q for q in questions
+                if q.get(
+                    "form_id",
+                    q["id"]
+                ) == question_id
+            ),
+            None
         )
-    ),
-    None
-)
 
         if question is None:
             continue
 
-answer_key = question.get(
-    "form_id",
-    question["id"]
-)
+        answer_key = question.get(
+            "form_id",
+            question["id"]
+        )
 
-user_answer = request.form.get(
-    "q" + str(answer_key),
-    ""
-).strip()
+        user_answer = request.form.get(
+            "q" + str(answer_key),
+            ""
+        ).strip()
 
-        # أسئلة التحليل لا تدخل في التصحيح حاليا
+        # أسئلة التحليل لا تدخل في التصحيح
         if question["type"] == "analysis":
             analysis_questions += 1
             continue
@@ -1039,8 +1049,14 @@ user_answer = request.form.get(
                     else "لم تتم الإجابة"
                 ),
                 "correct_answer": correct_answer,
-                "article": question.get("article", ""),
-                "law": question.get("law", "")
+                "article": question.get(
+                    "article",
+                    ""
+                ),
+                "law": question.get(
+                    "law",
+                    ""
+                )
             })
 
     review_id = str(uuid.uuid4())
