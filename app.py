@@ -961,14 +961,14 @@ def submit():
 
     if exam_key == "comprehensive":
 
-        questions = session.get(
-            "comprehensive_questions",
-            []
-        )
+    questions = session.get(
+        "comprehensive_questions",
+        []
+    )
 
-        exam_question_ids = [
-            q["id"] for q in questions
-        ]
+    exam_question_ids = [
+        q["form_id"] for q in questions
+    ]
 
     elif exam_key in EXAMS:
 
@@ -989,21 +989,29 @@ def submit():
 
     for question_id in exam_question_ids:
 
-        question = next(
-            (
-                q for q in questions
-                if q["id"] == question_id
-            ),
-            None
+question = next(
+    (
+        q for q in questions
+        if (
+            q.get("form_id", q["id"])
+            == question_id
         )
+    ),
+    None
+)
 
         if question is None:
             continue
 
-        user_answer = request.form.get(
-            "q" + str(question["id"]),
-            ""
-        ).strip()
+answer_key = question.get(
+    "form_id",
+    question["id"]
+)
+
+user_answer = request.form.get(
+    "q" + str(answer_key),
+    ""
+).strip()
 
         # أسئلة التحليل لا تدخل في التصحيح حاليا
         if question["type"] == "analysis":
