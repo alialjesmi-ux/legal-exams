@@ -333,6 +333,26 @@ HOME_PAGE = """
     </a>
 
 </div>
+<div class="law-card">
+
+    <h3>
+        🧠 الاختبار الشامل للقوانين
+    </h3>
+
+    <p>
+        اختبار شامل يختار 100 سؤال عشوائيًا من جميع القوانين.
+    </p>
+
+    <p>
+        مدة الاختبار:
+        <strong>30 دقيقة</strong>
+    </p>
+
+    <a href="/comprehensive" class="button">
+        بدء الاختبار الشامل
+    </a>
+
+</div>
 </div>
 
         <div class="visits">
