@@ -758,13 +758,24 @@ def submit():
     auto_questions = 0
     analysis_questions = 0
     wrong_answers = []
+    # معرفة القانون الذي اختاره الممتحن
+    exam_key = session.get("exam_key")
 
+    if exam_key not in EXAMS:
+        return redirect(url_for("home"))
+
+    # تحميل بنك الأسئلة الخاص بالقانون المختار
+    exam_config = EXAMS[exam_key]
+
+    questions = load_questions(
+        exam_config["file"]
+    )
     exam_question_ids = session.get("exam_question_ids", [])
 
     for question_id in exam_question_ids:
 
         question = next(
-            (q for q in QUESTIONS if q["id"] == question_id),
+            (q for q in questions if q["id"] == question_id),
             None
         )
 
