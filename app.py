@@ -952,18 +952,20 @@ def submit():
     analysis_questions = 0
     wrong_answers = []
     # معرفة القانون الذي اختاره الممتحن
-    exam_key = session.get("exam_key")
+exam_key = session.get("exam_key")
 
-    if exam_key not in EXAMS:
-        return redirect(url_for("home"))
+if exam_key == "comprehensive":
 
-    # تحميل بنك الأسئلة الخاص بالقانون المختار
+    questions = session.get("comprehensive_questions", [])
+
+elif exam_key in EXAMS:
+
     exam_config = EXAMS[exam_key]
+    questions = load_questions(exam_config["file"])
 
-    questions = load_questions(
-        exam_config["file"]
-    )
-    exam_question_ids = session.get("exam_question_ids", [])
+else:
+
+    return redirect(url_for("home"))
 
     for question_id in exam_question_ids:
 
