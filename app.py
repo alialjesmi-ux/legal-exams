@@ -586,7 +586,7 @@ REVIEW_PAGE = """
 </body>
 </html>
 """
-"""
+
 
 
 # =========================================================
@@ -727,7 +727,7 @@ def submit():
         analysis_questions=analysis_questions
     )
     @app.route("/review")
-def review():
+    def review():
 
     wrong_answers = session.get("wrong_answers", [])
 
