@@ -2,6 +2,7 @@ from flask import Flask, render_template_string, request, session, redirect, url
 import random
 import json
 import os
+import uuid
 
 app = Flask(__name__)
 app.secret_key = "emirates-law-ai-exams-2026"
@@ -34,7 +35,7 @@ QUESTIONS = load_questions()
 # =========================================================
 
 VISITS = 0
-
+REVIEW_RESULTS = {}
 
 # =========================================================
 # الصفحة الرئيسية
@@ -686,7 +687,7 @@ def submit():
             None
         )
 
-        if not question:
+        if question is None:
             continue
 
         user_answer = request.form.get(
@@ -694,7 +695,7 @@ def submit():
             ""
         ).strip()
 
-        # أسئلة التحليل
+        # أسئلة التحليل لا تدخل في التصحيح حاليا
         if question["type"] == "analysis":
             analysis_questions += 1
             continue
@@ -706,20 +707,29 @@ def submit():
         ).strip()
 
         if user_answer.lower() == correct_answer.lower():
-
             score += 1
 
         else:
-
             wrong_answers.append({
                 "id": question["id"],
                 "question": question["question"],
-                "user_answer": user_answer if user_answer else "لم تتم الإجابة",
+                "user_answer": (
+                    user_answer
+                    if user_answer
+                    else "لم تتم الإجابة"
+                ),
                 "correct_answer": correct_answer,
                 "article": question.get("article", "")
             })
 
-    session["wrong_answers"] = wrong_answers
+    # إنشاء رقم خاص بنتيجة المراجعة
+    review_id = str(uuid.uuid4())
+
+    # حفظ التفاصيل في الخادم وليس داخل Cookie
+    REVIEW_RESULTS[review_id] = wrong_answers
+
+    # نحفظ في session الرقم الصغير فقط
+    session["review_id"] = review_id
 
     return render_template_string(
         RESULT_PAGE,
@@ -730,7 +740,12 @@ def submit():
 @app.route("/review")
 def review():
 
-    wrong_answers = session.get("wrong_answers", [])
+    review_id = session.get("review_id")
+
+    wrong_answers = REVIEW_RESULTS.get(
+        review_id,
+        []
+    )
 
     return render_template_string(
         REVIEW_PAGE,
