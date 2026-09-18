@@ -965,36 +965,36 @@ def submit():
 
     exam_key = session.get("exam_key")
 
-if exam_key == "comprehensive":
+    if exam_key == "comprehensive":
 
-    exam_id = session.get("active_exam_id")
+        exam_id = session.get("active_exam_id")
 
-    questions = ACTIVE_EXAMS.get(
-        exam_id,
-        []
-    )
+        questions = ACTIVE_EXAMS.get(
+            exam_id,
+            []
+        )
 
-    exam_question_ids = [
-        q["form_id"]
-        for q in questions
-    ]
+        exam_question_ids = [
+            q["form_id"]
+            for q in questions
+        ]
 
-elif exam_key in EXAMS:
+    elif exam_key in EXAMS:
 
-    exam_config = EXAMS[exam_key]
+        exam_config = EXAMS[exam_key]
 
-    questions = load_questions(
-        exam_config["file"]
-    )
+        questions = load_questions(
+            exam_config["file"]
+        )
 
-    exam_question_ids = session.get(
-        "exam_question_ids",
-        []
-    )
+        exam_question_ids = session.get(
+            "exam_question_ids",
+            []
+        )
 
-else:
+    else:
 
-    return redirect(url_for("home"))
+        return redirect(url_for("home"))
 
     for question_id in exam_question_ids:
 
@@ -1022,7 +1022,6 @@ else:
             ""
         ).strip()
 
-        # أسئلة التحليل لا تدخل في التصحيح
         if question["type"] == "analysis":
             analysis_questions += 1
             continue
