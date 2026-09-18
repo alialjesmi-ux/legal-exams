@@ -19,17 +19,33 @@ EXAM_TIME_MINUTES = 30
 # تحميل بنك الأسئلة من questions.json
 # =========================================================
 
-def load_questions():
+# =========================================================
+# إعدادات الاختبارات وبنوك الأسئلة
+# =========================================================
+
+EXAMS = {
+    "personal_status": {
+        "name": "قانون الأحوال الشخصية الاتحادي",
+        "file": "questions.json",
+        "time": 30
+    },
+
+    "civil_personal_status": {
+        "name": "قانون الأحوال الشخصية المدني",
+        "file": "questions_civil_personal_status.json",
+        "time": 30
+    }
+}
+
+
+def load_questions(file_name):
     file_path = os.path.join(
         os.path.dirname(__file__),
-        "questions.json"
+        file_name
     )
 
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
-
-
-QUESTIONS = load_questions()
 # =========================================================
 # عداد الزيارات - تجريبي
 # =========================================================
