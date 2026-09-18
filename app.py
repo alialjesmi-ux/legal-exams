@@ -78,6 +78,7 @@ def load_questions(file_name):
 
 VISITS = 0
 REVIEW_RESULTS = {}
+ACTIVE_EXAMS = {}
 
 # =========================================================
 # الصفحة الرئيسية
