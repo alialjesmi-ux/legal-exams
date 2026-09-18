@@ -34,6 +34,12 @@ EXAMS = {
         "name": "قانون الأحوال الشخصية المدني",
         "file": "questions_civil_personal_status.json",
         "time": 30
+    },
+
+    "civil_procedure": {
+        "name": "قانون الإجراءات المدنية",
+        "file": "questions_civil_procedure.json",
+        "time": 30
     }
 }
 
