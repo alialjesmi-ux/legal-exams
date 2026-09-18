@@ -726,8 +726,8 @@ def submit():
         auto_questions=auto_questions,
         analysis_questions=analysis_questions
     )
-    @app.route("/review")
-    def review():
+@app.route("/review")
+def review():
 
     wrong_answers = session.get("wrong_answers", [])
 
