@@ -481,20 +481,64 @@ def home():
 
 @app.route("/exam")
 def exam():
-    questions = QUESTIONS.copy()
 
-    # اختيار 100 سؤال عشوائي فقط من بنك الأسئلة
-    number_of_questions = min(100, len(questions))
-    questions = random.sample(questions, number_of_questions)
+    # تقسيم بنك الأسئلة حسب النوع
+    true_false = [
+        q for q in QUESTIONS
+        if q["type"] == "true_false"
+    ]
 
-    # حفظ أرقام الأسئلة التي ظهرت لهذا الممتحن
-    session["exam_question_ids"] = [q["id"] for q in questions]
+    mcq = [
+        q for q in QUESTIONS
+        if q["type"] == "mcq"
+    ]
+
+    complete = [
+        q for q in QUESTIONS
+        if q["type"] == "complete"
+    ]
+
+    analysis = [
+        q for q in QUESTIONS
+        if q["type"] == "analysis"
+    ]
+
+    # اختيار التوزيع المطلوب
+    selected_questions = []
+
+    selected_questions += random.sample(
+        true_false,
+        min(55, len(true_false))
+    )
+
+    selected_questions += random.sample(
+        mcq,
+        min(38, len(mcq))
+    )
+
+    selected_questions += random.sample(
+        complete,
+        min(5, len(complete))
+    )
+
+    selected_questions += random.sample(
+        analysis,
+        min(2, len(analysis))
+    )
+
+    # خلط جميع الأسئلة بعد اختيارها
+    random.shuffle(selected_questions)
+
+    # حفظ أرقام الأسئلة الخاصة بهذا الممتحن
+    session["exam_question_ids"] = [
+        q["id"] for q in selected_questions
+    ]
 
     return render_template_string(
         EXAM_PAGE,
         exam_name=EXAM_NAME,
         exam_time=EXAM_TIME_MINUTES,
-        questions=questions
+        questions=selected_questions
     )
 
 
