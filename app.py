@@ -951,18 +951,44 @@ def submit():
     auto_questions = 0
     analysis_questions = 0
     wrong_answers = []
-    # معرفة القانون الذي اختاره الممتحن
-exam_key = session.get("exam_key")
-if exam_key not in EXAMS:
-    return redirect(url_for("home"))
 
-exam_config = EXAMS[exam_key]
-questions = load_questions(exam_config["file"])
+    exam_key = session.get("exam_key")
+
+    if exam_key == "comprehensive":
+
+        questions = session.get(
+            "comprehensive_questions",
+            []
+        )
+
+        exam_question_ids = [
+            q["id"] for q in questions
+        ]
+
+    elif exam_key in EXAMS:
+
+        exam_config = EXAMS[exam_key]
+
+        questions = load_questions(
+            exam_config["file"]
+        )
+
+        exam_question_ids = session.get(
+            "exam_question_ids",
+            []
+        )
+
+    else:
+
+        return redirect(url_for("home"))
 
     for question_id in exam_question_ids:
 
         question = next(
-            (q for q in questions if q["id"] == question_id),
+            (
+                q for q in questions
+                if q["id"] == question_id
+            ),
             None
         )
 
@@ -986,9 +1012,11 @@ questions = load_questions(exam_config["file"])
         ).strip()
 
         if user_answer.lower() == correct_answer.lower():
+
             score += 1
 
         else:
+
             wrong_answers.append({
                 "id": question["id"],
                 "question": question["question"],
@@ -998,16 +1026,14 @@ questions = load_questions(exam_config["file"])
                     else "لم تتم الإجابة"
                 ),
                 "correct_answer": correct_answer,
-                "article": question.get("article", "")
+                "article": question.get("article", ""),
+                "law": question.get("law", "")
             })
 
-    # إنشاء رقم خاص بنتيجة المراجعة
     review_id = str(uuid.uuid4())
 
-    # حفظ التفاصيل في الخادم وليس داخل Cookie
     REVIEW_RESULTS[review_id] = wrong_answers
 
-    # نحفظ في session الرقم الصغير فقط
     session["review_id"] = review_id
 
     return render_template_string(
