@@ -45,6 +45,11 @@ EXAMS = {
         "name": "قانون المعاملات المدنية",
         "file": "questions_civil_transactions.json",
         "time": 30
+    },
+        "criminal_law": {
+        "name": "قانون الجرائم والعقوبات",
+        "file": "questions_criminal_law.json",
+        "time": 30
     }
 }
 
