@@ -40,6 +40,11 @@ EXAMS = {
         "name": "قانون الإجراءات المدنية",
         "file": "questions_civil_procedure.json",
         "time": 30
+    },
+        "civil_transactions": {
+        "name": "قانون المعاملات المدنية",
+        "file": "questions_civil_transactions.json",
+        "time": 30
     }
 }
 
