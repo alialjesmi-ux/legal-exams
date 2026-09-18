@@ -257,7 +257,26 @@ HOME_PAGE = """
         </a>
 
     </div>
+<div class="law-card">
 
+    <h3>
+        ⚖️ قانون المعاملات المدنية
+    </h3>
+
+    <p>
+        اختبار في أحكام قانون المعاملات المدنية.
+    </p>
+
+    <p>
+        مدة الاختبار:
+        <strong>30 دقيقة</strong>
+    </p>
+
+    <a href="/exam/civil_transactions" class="button">
+        بدء الاختبار
+    </a>
+
+</div>
 </div>
 
         <div class="visits">
