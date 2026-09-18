@@ -57,6 +57,11 @@ EXAMS = {
     "time": 30
     }
 }
+COMPREHENSIVE_EXAM = {
+    "name": "الاختبار الشامل للقوانين",
+    "time": 30,
+    "questions_count": 100
+}
 
 
 def load_questions(file_name):
