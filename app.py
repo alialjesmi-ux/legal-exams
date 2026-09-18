@@ -282,6 +282,26 @@ HOME_PAGE = """
     </a>
 
 </div>
+<div class="law-card">
+
+    <h3>
+        ⚖️ قانون الجرائم والعقوبات
+    </h3>
+
+    <p>
+        اختبار في الأحكام العامة لقانون الجرائم والعقوبات.
+    </p>
+
+    <p>
+        مدة الاختبار:
+        <strong>30 دقيقة</strong>
+    </p>
+
+    <a href="/exam/criminal_law" class="button">
+        بدء الاختبار
+    </a>
+
+</div>
 </div>
 
         <div class="visits">
