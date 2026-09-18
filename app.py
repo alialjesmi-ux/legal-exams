@@ -1,5 +1,7 @@
 from flask import Flask, render_template_string, request, session, redirect, url_for
 import random
+import json
+import os
 
 app = Flask(__name__)
 app.secret_key = "emirates-law-ai-exams-2026"
@@ -12,42 +14,21 @@ EXAM_NAME = "قانون الأحوال الشخصية الاتحادي"
 EXAM_TIME_MINUTES = 10
 
 # بنك أسئلة تجريبي فقط
-QUESTIONS = [
-    {
-        "id": 1,
-        "type": "mcq",
-        "question": "أي من الآتي يعد من موضوعات قانون الأحوال الشخصية؟",
-        "options": ["الزواج", "الجرائم", "الشركات", "الإفلاس"],
-        "answer": "الزواج"
-    },
-    {
-        "id": 2,
-        "type": "true_false",
-        "question": "تنظم قوانين الأحوال الشخصية مسائل الزواج والطلاق.",
-        "options": ["صح", "خطأ"],
-        "answer": "صح"
-    },
-    {
-        "id": 3,
-        "type": "complete",
-        "question": "أكمل الجملة: من الموضوعات التي ينظمها قانون الأحوال الشخصية ______.",
-        "answer": "الزواج"
-    },
-    {
-        "id": 4,
-        "type": "mcq",
-        "question": "أي من الآتي لا يدخل - من حيث الأصل - ضمن مسائل الأحوال الشخصية؟",
-        "options": ["الزواج", "الطلاق", "الحضانة", "الجرائم والعقوبات"],
-        "answer": "الجرائم والعقوبات"
-    },
-    {
-        "id": 5,
-        "type": "analysis",
-        "question": "سؤال تعليل تجريبي: وضح باختصار أهمية تنظيم الأحوال الشخصية بقواعد قانونية.",
-        "answer": None
-    }
-]
+# =========================================================
+# تحميل بنك الأسئلة من questions.json
+# =========================================================
 
+def load_questions():
+    file_path = os.path.join(
+        os.path.dirname(__file__),
+        "questions.json"
+    )
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+QUESTIONS = load_questions()
 # =========================================================
 # عداد الزيارات - تجريبي
 # =========================================================
